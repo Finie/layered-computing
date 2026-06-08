@@ -6,10 +6,10 @@ This project is configured for static export with Next.js and can be deployed to
 
 - `next.config.ts` uses `output: "export"` so `npm run build` creates a static `out/` folder.
 - `.github/workflows/deploy-github-pages.yml` builds the app, typechecks, lints, uploads `out/`, and deploys to GitHub Pages.
-- The workflow sets `NEXT_PUBLIC_BASE_PATH` to `/<repository-name>`, which is correct for normal project pages such as:
+- The workflow sets `NEXT_PUBLIC_BASE_PATH` to an empty string because this site is configured for the custom root domain:
 
 ```txt
-https://your-username.github.io/tutorial/
+https://layeredcomputing.com/
 ```
 
 ## GitHub Setup
@@ -20,27 +20,39 @@ https://your-username.github.io/tutorial/
 4. Under `Build and deployment`, set `Source` to `GitHub Actions`.
 5. Push to the `main` branch or run the workflow manually from the `Actions` tab.
 
-## User/Organization Pages Exception
+## DNS Setup For `layeredcomputing.com`
 
-If the repository is named like this:
+In your domain registrar or DNS provider, configure the apex/root domain:
 
-```txt
-your-username.github.io
+```dns
+layeredcomputing.com  A     185.199.108.153
+layeredcomputing.com  A     185.199.109.153
+layeredcomputing.com  A     185.199.110.153
+layeredcomputing.com  A     185.199.111.153
 ```
 
-then the site is served from the domain root, not from `/<repository-name>`.
+Optional IPv6 records:
 
-In that case, edit `.github/workflows/deploy-github-pages.yml` and change:
-
-```yaml
-NEXT_PUBLIC_BASE_PATH: /${{ github.event.repository.name }}
+```dns
+layeredcomputing.com  AAAA  2606:50c0:8000::153
+layeredcomputing.com  AAAA  2606:50c0:8001::153
+layeredcomputing.com  AAAA  2606:50c0:8002::153
+layeredcomputing.com  AAAA  2606:50c0:8003::153
 ```
 
-to:
+For the `www` alternate name:
 
-```yaml
-NEXT_PUBLIC_BASE_PATH: ""
+```dns
+www.layeredcomputing.com  CNAME  Finie.github.io
 ```
+
+In GitHub repository settings:
+
+1. Go to `Settings` → `Pages`.
+2. Set `Custom domain` to `layeredcomputing.com`.
+3. Keep `Source` set to `GitHub Actions`.
+4. Wait for the DNS check to pass.
+5. Enable `Enforce HTTPS` when GitHub allows it.
 
 ## Local Checks
 
