@@ -418,9 +418,9 @@ def add_grades(students):
     id: "array",
     title: "Array",
     category: "Core",
-    summary: "Fixed-size indexed storage. Best when position matters.",
-    bestFor: "Fast access by index, fixed-size data, simple scans.",
-    avoidWhen: "You need frequent growth or frequent insertion/removal in the middle.",
+    summary: "Solves the multiple-variable problem: instead of a separate variable for every value, you get one name for N values stored contiguously in memory, making any position reachable in O(1) because the address of index i is always base + i × size.",
+    bestFor: "When you know the size upfront and need O(1) access by position — the fastest possible element retrieval.",
+    avoidWhen: "You need to grow the collection or insert/remove in the middle — both force allocating new memory or shifting every subsequent element.",
     internalShape: "Contiguous indexed storage.",
     interviewSignals: ["maximum/minimum scan", "two pointers", "prefix sums", "sliding window"],
     complexity: [
@@ -510,9 +510,9 @@ def add_grades(students):
     id: "array-list",
     title: "Dynamic Array / Growable List",
     category: "Core",
-    summary: "Array-like storage that grows when it runs out of room.",
-    bestFor: "Building result lists when you do not know the final size.",
-    avoidWhen: "You frequently insert or remove near the front or middle.",
+    summary: "Fixes the fixed-size limitation of plain arrays: you declare no size upfront — it starts small, and when full it allocates a larger internal array and copies over, so you can keep appending without managing memory yourself.",
+    bestFor: "Building result lists of unknown size where you mostly append to the end.",
+    avoidWhen: "You frequently insert or remove near the front or middle — every element after the insertion point must shift one position.",
     internalShape: "Resizable internal array.",
     interviewSignals: ["filter results", "merge arrays", "build output", "dynamic programming table"],
     complexity: [
@@ -613,9 +613,9 @@ def add_grades(students):
     id: "linked-list",
     title: "Linked List",
     category: "Core",
-    summary: "A chain of nodes connected by references.",
-    bestFor: "Problems where changing links is the main operation.",
-    avoidWhen: "You need fast random access by index.",
+    summary: "Fixes the O(n) shift cost of arrays: each node lives anywhere in memory and holds a pointer to the next one, so prepending or removing the head rewires one pointer — always O(1), with no shifting.",
+    bestFor: "Frequent head insertions or removals, and as the backbone of stacks and queues where index access is never needed.",
+    avoidWhen: "You need to read by index — without contiguous memory there is no formula, so you must walk from the head every time, making access O(n).",
     internalShape: "Node objects with next, and sometimes previous, references.",
     interviewSignals: ["reverse list", "cycle detection", "kth from end", "merge sorted lists"],
     complexity: [
@@ -730,12 +730,269 @@ class SimpleLinkedList:
     },
   },
   {
+    id: "doubly-linked-list",
+    title: "Doubly Linked List",
+    category: "Core",
+    summary: "Extends the singly linked list with a prev pointer on each node: now you can splice out any node you already hold in O(1) without scanning from the head — something a singly linked list cannot do.",
+    bestFor: "LRU cache, browser history, and any structure needing O(1) removal from the middle when you already have a reference to the node.",
+    avoidWhen: "You only traverse forward — the prev pointer doubles memory per node with no benefit.",
+    internalShape: "Node objects with both next and prev references, plus head and tail sentinels.",
+    interviewSignals: ["LRU cache", "browser history", "undo/redo", "deque implementation"],
+    complexity: [
+      { label: "Access index", value: "O(n)" },
+      { label: "Add first / last", value: "O(1)" },
+      { label: "Remove first / last", value: "O(1)" },
+      { label: "Remove by node ref", value: "O(1)" },
+      { label: "Search", value: "O(n)" },
+    ],
+    languages: {
+      java: {
+        internals:
+          "Each node holds prev and next. Maintaining both pointers lets you splice out a node in O(1) without scanning from the head. Java's built-in LinkedList uses this layout.",
+        internalCode: `class Node {
+    int value;
+    Node prev, next;
+    Node(int value) { this.value = value; }
+}
+
+class DoublyLinkedList {
+    private Node head, tail;
+
+    void addLast(int value) {
+        Node node = new Node(value);
+        if (head == null) { head = tail = node; return; }
+        node.prev = tail;
+        tail.next = node;
+        tail = node;
+    }
+
+    void remove(Node node) {
+        if (node.prev != null) node.prev.next = node.next;
+        else head = node.next;           // node was head
+        if (node.next != null) node.next.prev = node.prev;
+        else tail = node.prev;           // node was tail
+    }
+}`,
+        problem: "Implement an LRU cache with O(1) get and put.",
+        solutionCode: `class LRUCache {
+    private final int capacity;
+    private final Map<Integer, Node> map = new HashMap<>();
+    private final Node head = new Node(0), tail = new Node(0);
+
+    LRUCache(int capacity) {
+        this.capacity = capacity;
+        head.next = tail;
+        tail.prev = head;
+    }
+
+    int get(int key) {
+        if (!map.containsKey(key)) return -1;
+        Node node = map.get(key);
+        moveToFront(node);
+        return node.value;
+    }
+
+    void put(int key, int value) {
+        if (map.containsKey(key)) {
+            Node node = map.get(key);
+            node.value = value;
+            moveToFront(node);
+        } else {
+            if (map.size() == capacity) evict();
+            Node node = new Node(value);
+            node.key = key;
+            insertFront(node);
+            map.put(key, node);
+        }
+    }
+
+    private void moveToFront(Node node) { remove(node); insertFront(node); }
+
+    private void insertFront(Node node) {
+        node.next = head.next; node.prev = head;
+        head.next.prev = node; head.next = node;
+    }
+
+    private void remove(Node node) {
+        node.prev.next = node.next;
+        node.next.prev = node.prev;
+    }
+
+    private void evict() {
+        Node lru = tail.prev;
+        remove(lru);
+        map.remove(lru.key);
+    }
+
+    static class Node {
+        int key, value;
+        Node prev, next;
+        Node(int value) { this.value = value; }
+    }
+}`,
+        whyItFits:
+          "The LRU cache needs O(1) removal from the middle of the list (on cache hit) and O(1) insertion at the front. Only a doubly linked list can do both without scanning.",
+      },
+      typescript: {
+        internals:
+          "Each node carries both next and prev. A sentinel head and tail node eliminate null-checks in insert/remove.",
+        internalCode: `class DLLNode {
+  constructor(
+    public value: number,
+    public prev: DLLNode | null = null,
+    public next: DLLNode | null = null
+  ) {}
+}
+
+class DoublyLinkedList {
+  private head: DLLNode | null = null;
+  private tail: DLLNode | null = null;
+
+  addLast(value: number): DLLNode {
+    const node = new DLLNode(value);
+    if (!this.head) { this.head = this.tail = node; return node; }
+    node.prev = this.tail;
+    this.tail!.next = node;
+    this.tail = node;
+    return node;
+  }
+
+  remove(node: DLLNode): void {
+    if (node.prev) node.prev.next = node.next;
+    else this.head = node.next;
+    if (node.next) node.next.prev = node.prev;
+    else this.tail = node.prev;
+  }
+}`,
+        problem: "Implement an LRU cache with O(1) get and put.",
+        solutionCode: `class LRUCache {
+  private map = new Map<number, DLLNode>();
+  private head = new DLLNode(-1);   // sentinel
+  private tail = new DLLNode(-1);   // sentinel
+
+  constructor(private capacity: number) {
+    this.head.next = this.tail;
+    this.tail.prev = this.head;
+  }
+
+  get(key: number): number {
+    const node = this.map.get(key);
+    if (!node) return -1;
+    this.moveToFront(node);
+    return node.value;
+  }
+
+  put(key: number, value: number): void {
+    const existing = this.map.get(key);
+    if (existing) {
+      existing.value = value;
+      this.moveToFront(existing);
+      return;
+    }
+    if (this.map.size === this.capacity) this.evict();
+    const node = new DLLNode(value);
+    this.insertFront(node);
+    this.map.set(key, node);
+  }
+
+  private moveToFront(node: DLLNode) { this.remove(node); this.insertFront(node); }
+
+  private insertFront(node: DLLNode) {
+    node.next = this.head.next;
+    node.prev = this.head;
+    this.head.next!.prev = node;
+    this.head.next = node;
+  }
+
+  private remove(node: DLLNode) {
+    node.prev!.next = node.next;
+    node.next!.prev = node.prev;
+  }
+
+  private evict() {
+    const lru = this.tail.prev!;
+    this.remove(lru);
+    this.map.delete(lru.value);
+  }
+}
+
+class DLLNode {
+  constructor(
+    public value: number,
+    public prev: DLLNode | null = null,
+    public next: DLLNode | null = null
+  ) {}
+}`,
+        whyItFits:
+          "Moving a recently-used node to the front requires splicing it out and reinserting it. The prev pointer makes the splice O(1).",
+      },
+      python: {
+        internals:
+          "Python nodes hold both prev and next. Sentinel nodes at each end simplify boundary logic.",
+        internalCode: `class Node:
+    def __init__(self, value=0):
+        self.value = value
+        self.prev = None
+        self.next = None
+
+class DoublyLinkedList:
+    def __init__(self):
+        self.head = Node()   # sentinel
+        self.tail = Node()   # sentinel
+        self.head.next = self.tail
+        self.tail.prev = self.head
+
+    def add_last(self, node: Node):
+        node.prev = self.tail.prev
+        node.next = self.tail
+        self.tail.prev.next = node
+        self.tail.prev = node
+
+    def remove(self, node: Node):
+        node.prev.next = node.next
+        node.next.prev = node.prev`,
+        problem: "Implement an LRU cache with O(1) get and put.",
+        solutionCode: `class LRUCache:
+    def __init__(self, capacity: int):
+        self.capacity = capacity
+        self.cache: dict[int, Node] = {}
+        self.list = DoublyLinkedList()
+
+    def get(self, key: int) -> int:
+        if key not in self.cache:
+            return -1
+        node = self.cache[key]
+        self.list.remove(node)
+        self.list.add_last(node)
+        return node.value
+
+    def put(self, key: int, value: int) -> None:
+        if key in self.cache:
+            node = self.cache[key]
+            node.value = value
+            self.list.remove(node)
+            self.list.add_last(node)
+            return
+        if len(self.cache) == self.capacity:
+            lru = self.list.head.next   # oldest is right after sentinel head
+            self.list.remove(lru)
+            del self.cache[lru.key]
+        node = Node(value)
+        node.key = key
+        self.list.add_last(node)
+        self.cache[key] = node`,
+        whyItFits:
+          "Evicting the LRU entry and promoting a recently used one both require O(1) list surgery — possible only with prev pointers.",
+      },
+    },
+  },
+  {
     id: "stack",
     title: "Stack",
     category: "Core",
-    summary: "Last-in, first-out processing.",
-    bestFor: "Nested structures, undo behavior, and backtracking.",
-    avoidWhen: "You need to process oldest items first.",
+    summary: "Models the 'most recently opened must close first' constraint: nested function calls return in reverse order, brackets must close in reverse order, and undo must reverse the last action — all require the last item in to be the first item out.",
+    bestFor: "Nested structures, undo/redo, backtracking, and DFS — anywhere the most recent context must finish before the previous one resumes.",
+    avoidWhen: "Items should be processed in arrival order — use a queue instead.",
     internalShape: "One active top end.",
     interviewSignals: ["balanced brackets", "undo", "DFS", "next greater element"],
     complexity: [
@@ -830,9 +1087,9 @@ class SimpleLinkedList:
     id: "hash-set",
     title: "HashSet",
     category: "Sets",
-    summary: "Unique values with fast membership checks.",
-    bestFor: "Duplicate detection and 'have I seen this before?' problems.",
-    avoidWhen: "You need sorted order.",
+    summary: "Fixes the O(n) membership scan of arrays: instead of checking every element, it hashes each value to a bucket so 'have I seen this?' takes O(1) average — regardless of how many items are stored.",
+    bestFor: "Deduplication and membership checks where speed matters more than order.",
+    avoidWhen: "You need sorted order or insertion-order iteration — hashing randomizes the internal position of elements.",
     internalShape: "Hash table buckets with collision handling.",
     interviewSignals: ["duplicate", "repeated", "contains", "intersection"],
     complexity: [
@@ -962,9 +1219,9 @@ class SimpleLinkedList:
     id: "linked-hash-set",
     title: "LinkedHashSet",
     category: "Sets",
-    summary: "A set that keeps values unique and remembers insertion order.",
-    bestFor: "Removing duplicates while keeping the first-seen order.",
-    avoidWhen: "You do not care about order; HashSet is simpler.",
+    summary: "Fixes the insertion-order loss of HashSet: it maintains a linked list alongside the hash buckets so you get O(1) membership checks and iteration that gives elements back in the order they were first added.",
+    bestFor: "Removing duplicates while preserving the original sequence — for example, deduplicating a stream of events without reordering them.",
+    avoidWhen: "Order doesn't matter — HashSet is simpler and uses less memory.",
     internalShape: "Hash table plus a linked insertion-order chain.",
     interviewSignals: ["dedupe with order", "first-seen order", "stable unique values"],
     complexity: [
@@ -1037,9 +1294,9 @@ class SimpleLinkedList:
     id: "tree-set",
     title: "TreeSet",
     category: "Sets",
-    summary: "A set that keeps unique values sorted.",
-    bestFor: "Unique values where smallest, largest, sorted order, or range lookup matters.",
-    avoidWhen: "You only need fast duplicate detection; HashSet is usually faster.",
+    summary: "Fixes the unordered output of HashSet using a balanced BST: every insert maintains sorted order, so you can ask for the smallest, largest, or any floor/ceiling value in O(log n) — impossible with a hash.",
+    bestFor: "Unique values where you need sorted iteration, range queries, or nearest-value lookups.",
+    avoidWhen: "You only need membership checks — HashSet's O(1) average beats TreeSet's O(log n).",
     internalShape: "Self-balancing binary search tree.",
     interviewSignals: ["sorted unique", "range query", "floor", "ceiling"],
     complexity: [
@@ -1104,9 +1361,9 @@ boolean contains(TreeNode node, int value) {
     id: "hash-map",
     title: "HashMap / Dictionary",
     category: "Maps",
-    summary: "Key-value lookup with average constant-time access.",
-    bestFor: "Counting, grouping, and looking up values by ID/key.",
-    avoidWhen: "You need keys automatically sorted.",
+    summary: "Replaces the need to scan a list of pairs to find a value: hashing the key goes directly to its bucket in O(1) average, so key-to-value lookup stays fast no matter how many entries the map holds.",
+    bestFor: "Counting, grouping, and any 'given X, what is Y?' lookup.",
+    avoidWhen: "You need keys in sorted order — hashing destroys any key ordering.",
     internalShape: "Hash table entries stored by key hash.",
     interviewSignals: ["count", "frequency", "lookup", "two sum", "group"],
     complexity: [
@@ -1207,9 +1464,9 @@ function hash(key: string): number {
     id: "linked-hash-map",
     title: "LinkedHashMap",
     category: "Maps",
-    summary: "A map that remembers insertion order while keeping fast key lookup.",
-    bestFor: "Counts or lookups where original order still matters.",
-    avoidWhen: "Key order does not matter or sorted key order is required.",
+    summary: "Fixes the insertion-order loss of HashMap: a linked list threads through the entries in insertion order, so iteration is predictable without sacrificing O(1) key lookup.",
+    bestFor: "Frequency maps or caches where you also need to replay or display entries in the order they were added.",
+    avoidWhen: "Insertion order doesn't matter (use HashMap) or you need keys sorted (use TreeMap) — the extra links add memory overhead for no benefit.",
     internalShape: "Hash table plus linked entry order.",
     interviewSignals: ["first unique", "ordered counts", "LRU cache"],
     complexity: [
@@ -1291,9 +1548,9 @@ function hash(key: string): number {
     id: "tree-map",
     title: "TreeMap",
     category: "Maps",
-    summary: "A map that keeps keys sorted.",
-    bestFor: "Key-value lookup where sorted key order or range lookup matters.",
-    avoidWhen: "You only need fastest average lookup; HashMap is usually simpler.",
+    summary: "Fixes the unordered keys of HashMap using a balanced BST: keys stay sorted at all times, enabling range queries like 'all entries between A and B' and floor/ceiling lookups — operations a hash cannot support.",
+    bestFor: "Key-value storage where you need to iterate keys in order or ask 'what keys fall between X and Y?'",
+    avoidWhen: "You only need point lookups — HashMap's O(1) average beats TreeMap's O(log n).",
     internalShape: "Self-balancing binary search tree of key-value entries.",
     interviewSignals: ["sorted keys", "range by key", "floor key", "ceiling key"],
     complexity: [
@@ -1366,9 +1623,9 @@ String get(MapNode node, int key) {
     id: "queue",
     title: "Queue",
     category: "Core",
-    summary: "First-in, first-out processing.",
-    bestFor: "Processing items in arrival order.",
-    avoidWhen: "Newest item should be handled first.",
+    summary: "Enforces fairness: the first item added is the first item processed, which is what CPU schedulers, print spoolers, and BFS all need — a stack would process the newest job first, which is wrong when arrival order matters.",
+    bestFor: "Processing items in the order they arrived — first-come, first-served.",
+    avoidWhen: "The most urgent item (not the oldest) should go next — use a priority queue instead.",
     internalShape: "Front index for removal, back index for insertion.",
     interviewSignals: ["BFS", "level order", "tickets", "arrival order"],
     complexity: [
@@ -1463,9 +1720,9 @@ def process_tickets(tickets):
     id: "deque",
     title: "Deque",
     category: "Core",
-    summary: "A double-ended queue that can add or remove from both ends.",
-    bestFor: "Palindrome checks, sliding windows, and replacing stack/queue behavior with one structure.",
-    avoidWhen: "You only need simple indexed access.",
+    summary: "Generalizes stack and queue into one structure: a stack only opens one end, a queue only one end; a deque opens both, which is the minimum shape needed for sliding-window algorithms and palindrome checks.",
+    bestFor: "Sliding window problems, palindrome checks, and anywhere you need LIFO from one side and FIFO from the other without two separate structures.",
+    avoidWhen: "You only need indexed access — an array or list is clearer.",
     internalShape: "Circular buffer with front and back indexes.",
     interviewSignals: ["palindrome", "front and back", "sliding window maximum"],
     complexity: [
@@ -1552,9 +1809,9 @@ def palindrome(word):
     id: "priority-queue",
     title: "PriorityQueue / Heap",
     category: "Heaps",
-    summary: "Always returns the next highest-priority item.",
-    bestFor: "Top K, scheduling, and repeatedly asking for smallest/largest next.",
-    avoidWhen: "You need full sorted order at all times.",
+    summary: "Fixes the O(n) 'find the minimum' scan: a heap keeps the smallest (or largest) element at the top at all times, so each extraction costs O(log n) — far cheaper than re-scanning an unsorted list each time.",
+    bestFor: "Repeatedly extracting the smallest or largest item — top-K problems, Dijkstra's algorithm, task scheduling.",
+    avoidWhen: "You need full sorted order at once — just sort the array; a heap only guarantees the next item.",
     internalShape: "Binary heap stored inside an array.",
     interviewSignals: ["top k", "kth largest", "merge k lists", "shortest path"],
     complexity: [
@@ -1651,9 +1908,9 @@ def second_smallest(nums):
     id: "binary-tree",
     title: "Binary Tree",
     category: "Trees",
-    summary: "A hierarchical structure where each node has at most two children.",
-    bestFor: "Recursive traversal, depth questions, and parent-child relationships.",
-    avoidWhen: "Your data is flat and only needs sequential scanning.",
+    summary: "Models hierarchical data that flat structures cannot represent: file systems, org charts, expression parsers, and HTML all have natural parent-child relationships — an array or list can only express a sequence, not a branching hierarchy.",
+    bestFor: "Recursive traversal, depth/height questions, and any data where each item has an ordered left and right child.",
+    avoidWhen: "Your data is a flat sequence with no hierarchy — an array or list is simpler and faster to index.",
     internalShape: "Nodes connected parent-to-child.",
     interviewSignals: ["depth", "traversal", "lowest common ancestor", "level order"],
     complexity: [
@@ -1716,9 +1973,9 @@ def second_smallest(nums):
     id: "tree",
     title: "Binary Search Tree (BST)",
     category: "Trees",
-    summary: "A binary tree where smaller values go left and larger values go right.",
-    bestFor: "Ordered search paths and sorted traversal.",
-    avoidWhen: "The tree may become badly unbalanced or you only need hash lookup.",
+    summary: "Adds a search rule to the binary tree: smaller values go left, larger go right — so at every node you discard half the remaining values, giving O(log n) search, insert, and delete on a structure that also stays dynamic.",
+    bestFor: "Ordered search and sorted traversal on data that changes frequently — faster than re-sorting an array on every insert.",
+    avoidWhen: "Input is already sorted or nearly sorted — insertions build a lopsided tree that degrades to O(n); use a self-balancing variant (AVL, Red-Black) for guarantees.",
     internalShape: "Binary tree with ordering rules.",
     interviewSignals: ["ordered search", "validate BST", "in-order sorted", "successor/predecessor"],
     complexity: [
@@ -1788,9 +2045,9 @@ def second_smallest(nums):
     id: "trie",
     title: "Trie",
     category: "Trees",
-    summary: "A prefix tree for storing words by character path.",
-    bestFor: "Autocomplete, prefix search, word dictionaries.",
-    avoidWhen: "You only need exact lookup and memory matters more.",
+    summary: "Fixes the 'find all words with this prefix' problem: a HashMap must scan every key to find matches, but a trie stores characters as edges so prefix lookup is just a path walk — O(k) where k is the prefix length, independent of dictionary size.",
+    bestFor: "Autocomplete, spell check, and any problem where the query is a prefix of stored keys.",
+    avoidWhen: "You only need exact key lookup — a HashMap is simpler and uses less memory.",
     internalShape: "Each node maps characters to child nodes.",
     interviewSignals: ["prefix", "startsWith", "autocomplete", "word search"],
     complexity: [
@@ -1853,9 +2110,9 @@ def second_smallest(nums):
     id: "union-find",
     title: "Union-Find / Disjoint Set",
     category: "Advanced",
-    summary: "Tracks which items belong to the same connected group.",
-    bestFor: "Connectivity questions and grouping components.",
-    avoidWhen: "You need full path details, not just connected/not connected.",
+    summary: "Fixes the slow connectivity query on graphs: BFS/DFS answers 'are X and Y connected?' in O(V+E) and must repeat the full traversal for every query — union-find answers the same question in nearly O(1) amortized using path-compressed trees.",
+    bestFor: "Counting connected components, cycle detection, and Kruskal's MST — anywhere you need to repeatedly merge groups and query membership.",
+    avoidWhen: "You need the actual path between nodes — union-find only tells you connected or not, not how.",
     internalShape: "Parent array where each set has a representative root.",
     interviewSignals: ["connected components", "same group", "union", "cycle in undirected graph"],
     complexity: [
@@ -1927,9 +2184,9 @@ def second_smallest(nums):
     id: "graph",
     title: "Graph",
     category: "Graphs",
-    summary: "Nodes connected by edges.",
-    bestFor: "Networks, dependencies, routes, relationships.",
-    avoidWhen: "The data is simply linear or hierarchical.",
+    summary: "Generalizes the tree to allow any node to connect to any other: real-world networks — roads, social graphs, package dependencies — have cycles and multiple parents that a tree cannot represent.",
+    bestFor: "Any network with arbitrary connections: routes, social relationships, dependency graphs, state machines.",
+    avoidWhen: "The data is strictly hierarchical with one parent per node — a tree is simpler and traversal algorithms are more predictable.",
     internalShape: "Adjacency list or adjacency matrix.",
     interviewSignals: ["connected", "route", "dependency", "network", "shortest path"],
     complexity: [
