@@ -70,16 +70,19 @@ export function TopicNav({
 
   return (
     <>
-      <button
-        aria-controls="topic-nav"
-        aria-expanded={mobileNavOpen}
-        className="mobileNavToggle"
-        onClick={() => setMobileNavOpen(true)}
-        type="button"
-      >
-        <span aria-hidden="true">☰</span>
-        Topics
-      </button>
+      <div className="mobileTopicBar">
+        <button
+          aria-controls="topic-nav"
+          aria-expanded={mobileNavOpen}
+          aria-label="Open topic navigation"
+          className="mobileNavToggle"
+          onClick={() => setMobileNavOpen(true)}
+          type="button"
+        >
+          <span aria-hidden="true" />
+        </button>
+        <strong>Layered Computing</strong>
+      </div>
 
       {mobileNavOpen ? (
         <button

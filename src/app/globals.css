@@ -91,13 +91,16 @@ button {
   background: var(--surface);
   border: 1px solid var(--line);
   border-radius: 12px;
-  max-height: calc(100vh - 48px);
-  overflow: auto;
+  max-height: calc(100dvh - 48px);
+  overflow-x: hidden;
+  overflow-y: auto;
   padding: 14px;
   position: sticky;
+  scrollbar-gutter: stable;
   top: 24px;
 }
 
+.mobileTopicBar,
 .mobileNavToggle,
 .mobileNavBackdrop,
 .mobileNavTop {
@@ -788,27 +791,70 @@ button {
     padding: 16px;
   }
 
+  .mobileTopicBar {
+    align-items: center;
+    background: rgb(246 250 252 / 0.96);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    box-shadow: 0 10px 26px rgb(18 57 90 / 0.1);
+    display: flex;
+    gap: 12px;
+    justify-content: flex-start;
+    min-height: 52px;
+    padding: 8px 10px;
+    position: sticky;
+    top: 10px;
+    z-index: 8;
+  }
+
+  .mobileTopicBar strong {
+    color: #12395a;
+    font-size: 0.92rem;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+  }
+
   .mobileNavToggle {
     align-items: center;
     background: var(--accent);
     border: 1px solid var(--accent);
-    border-radius: 10px;
+    border-radius: 9px;
     color: #ffffff;
     display: inline-flex;
-    font-weight: 800;
-    gap: 8px;
+    flex: 0 0 auto;
+    height: 38px;
     justify-content: center;
-    padding: 11px 14px;
-    position: sticky;
-    top: 10px;
-    width: max-content;
-    z-index: 8;
+    padding: 0;
+    width: 42px;
+  }
+
+  .mobileNavToggle span,
+  .mobileNavToggle span::before,
+  .mobileNavToggle span::after {
+    background: currentColor;
+    border-radius: 999px;
+    content: "";
+    display: inline-block;
+    height: 2px;
+    width: 18px;
   }
 
   .mobileNavToggle span {
-    display: inline-block;
-    font-size: 1.1rem;
-    line-height: 1;
+    position: relative;
+  }
+
+  .mobileNavToggle span::before,
+  .mobileNavToggle span::after {
+    left: 0;
+    position: absolute;
+  }
+
+  .mobileNavToggle span::before {
+    top: -6px;
+  }
+
+  .mobileNavToggle span::after {
+    top: 6px;
   }
 
   .mobileNavBackdrop {
@@ -855,10 +901,13 @@ button {
     border-radius: 0;
     bottom: 0;
     box-shadow: 18px 0 42px rgb(15 23 42 / 0.18);
+    height: 100dvh;
     left: 0;
     max-height: none;
     max-width: min(86vw, 360px);
     overscroll-behavior: contain;
+    overflow-x: hidden;
+    overflow-y: auto;
     padding: 14px;
     position: fixed;
     top: 0;
