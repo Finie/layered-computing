@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import { algorithmTopics } from "@/data/algorithm-content";
 import { appLayerTopics } from "@/data/app-layer-content";
 import { languages, learningNotes, topics } from "@/data/tutorial-content";
-import type { LanguageId } from "@/types/tutorial";
+import type { AlgorithmFamily, LanguageId, TutorialTopic } from "@/types/tutorial";
 import { AlgorithmView } from "./AlgorithmView";
 import { AppLayerView } from "./AppLayerView";
 import { CodeBlock } from "./CodeBlock";
@@ -17,9 +17,72 @@ function getPracticeTitle(example: string | { title: string }) {
   return typeof example === "string" ? example : example.title;
 }
 
+type OrderedTopic = {
+  id: string;
+  layer: string;
+  title: string;
+};
+
+const topicCategoryOrder: TutorialTopic["category"][] = [
+  "Foundations",
+  "Core",
+  "Sets",
+  "Maps",
+  "Trees",
+  "Heaps",
+  "Graphs",
+  "Advanced",
+];
+
+const algorithmFamilyOrder: AlgorithmFamily[] = [
+  "Foundations",
+  "Sorting",
+  "Searching",
+  "Recursion",
+  "Dynamic Programming",
+  "Traversal",
+  "Graphs",
+  "Concurrency",
+  "Compression",
+  "Security",
+  "Databases",
+  "AI & ML",
+  "Distributed",
+];
+
 export function TutorialExplorer() {
   const [selectedLanguage, setSelectedLanguage] = useState<LanguageId>("java");
   const [selectedTopicId, setSelectedTopicId] = useState(topics[0].id);
+
+  const orderedTopics = useMemo<OrderedTopic[]>(() => {
+    const foundationalTopics = topicCategoryOrder.flatMap((category) =>
+      topics
+        .filter((topic) => topic.category === category)
+        .map((topic) => ({
+          id: topic.id,
+          layer: `Foundational Computing / ${category}`,
+          title: topic.title,
+        })),
+    );
+
+    const orderedAlgorithmTopics = algorithmFamilyOrder.flatMap((family) =>
+      algorithmTopics
+        .filter((topic) => topic.family === family)
+        .map((topic) => ({
+          id: topic.id,
+          layer: `Algorithms / ${family}`,
+          title: topic.title,
+        })),
+    );
+
+    const applicationTopics = appLayerTopics.map((topic) => ({
+      id: topic.id,
+      layer: "Application Layer",
+      title: topic.title,
+    }));
+
+    return [...foundationalTopics, ...orderedAlgorithmTopics, ...applicationTopics];
+  }, []);
 
   const selectedDsTopic = useMemo(
     () => topics.find((t) => t.id === selectedTopicId),
@@ -39,13 +102,24 @@ export function TutorialExplorer() {
   const selectedNotes = selectedDsTopic ? learningNotes[selectedDsTopic.id] : null;
   const isAppLayer = !!selectedAlTopic;
   const isAlgorithmLayer = !!selectedAlgorithmTopic;
+  const selectedIndex = orderedTopics.findIndex((topic) => topic.id === selectedTopicId);
+  const previousTopic = selectedIndex > 0 ? orderedTopics[selectedIndex - 1] : null;
+  const nextTopic =
+    selectedIndex >= 0 && selectedIndex < orderedTopics.length - 1
+      ? orderedTopics[selectedIndex + 1]
+      : null;
+
+  function selectTopic(topicId: string) {
+    setSelectedTopicId(topicId);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
 
   return (
     <div className="tutorialShell">
       <TopicNav
         algorithmTopics={algorithmTopics}
         appLayerTopics={appLayerTopics}
-        onSelectTopic={setSelectedTopicId}
+        onSelectTopic={selectTopic}
         selectedTopicId={selectedTopicId}
         topics={topics}
       />
@@ -158,6 +232,32 @@ export function TutorialExplorer() {
               )}
             </section>
           </>
+        ) : null}
+
+        {selectedIndex >= 0 ? (
+          <nav className="lessonPager" aria-label="Previous and next topics">
+            <button
+              className="pagerButton"
+              disabled={!previousTopic}
+              onClick={() => previousTopic && selectTopic(previousTopic.id)}
+              type="button"
+            >
+              <span className="pagerDirection">Previous</span>
+              <strong>{previousTopic?.title ?? "Start of tutorial"}</strong>
+              <small>{previousTopic?.layer ?? "No previous topic"}</small>
+            </button>
+
+            <button
+              className="pagerButton next"
+              disabled={!nextTopic}
+              onClick={() => nextTopic && selectTopic(nextTopic.id)}
+              type="button"
+            >
+              <span className="pagerDirection">Next</span>
+              <strong>{nextTopic?.title ?? "End of tutorial"}</strong>
+              <small>{nextTopic?.layer ?? "No next topic"}</small>
+            </button>
+          </nav>
         ) : null}
       </main>
     </div>
