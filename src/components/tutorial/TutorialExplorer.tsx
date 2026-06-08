@@ -11,7 +11,7 @@ import { CodeBlock } from "./CodeBlock";
 import { ComplexityGrid } from "./ComplexityGrid";
 import { LanguageTabs } from "./LanguageTabs";
 import { TopicHeader } from "./TopicHeader";
-import { TopicNav } from "./TopicNav";
+import { MobileSiteHeader, TopicNav } from "./TopicNav";
 
 function getPracticeTitle(example: string | { title: string }) {
   return typeof example === "string" ? example : example.title;
@@ -115,8 +115,8 @@ export function TutorialExplorer() {
   }
 
   return (
-    <div className="tutorialShell">
-      <TopicNav
+    <>
+      <MobileSiteHeader
         algorithmTopics={algorithmTopics}
         appLayerTopics={appLayerTopics}
         onSelectTopic={selectTopic}
@@ -124,25 +124,48 @@ export function TutorialExplorer() {
         topics={topics}
       />
 
-      <main className="lessonPanel">
-        {isAppLayer ? (
-          <AppLayerView topic={selectedAlTopic} />
-        ) : isAlgorithmLayer ? (
-          <AlgorithmView
-            languages={languages}
-            onSelectLanguage={setSelectedLanguage}
-            selectedLanguage={selectedLanguage}
-            topic={selectedAlgorithmTopic}
-          />
-        ) : selectedDsTopic ? (
-          <>
-            <LanguageTabs
+      <header className="appHeader" id="home">
+        <div>
+          <span className="eyebrow">Interactive study guide</span>
+          <h1>Layered Computing Curriculum</h1>
+          <p>
+            Study computing as a chain of abstractions: primitive values become
+            structured data, structured data enables algorithms, and algorithms
+            scale into applications, databases, distributed systems, cloud
+            infrastructure, and AI systems.
+          </p>
+        </div>
+      </header>
+
+      <div className="tutorialShell">
+        <TopicNav
+          algorithmTopics={algorithmTopics}
+          appLayerTopics={appLayerTopics}
+          onSelectTopic={selectTopic}
+          selectedTopicId={selectedTopicId}
+          showMobileHeader={false}
+          topics={topics}
+        />
+
+        <main className="lessonPanel">
+          {isAppLayer ? (
+            <AppLayerView topic={selectedAlTopic} />
+          ) : isAlgorithmLayer ? (
+            <AlgorithmView
               languages={languages}
               onSelectLanguage={setSelectedLanguage}
               selectedLanguage={selectedLanguage}
+              topic={selectedAlgorithmTopic}
             />
+          ) : selectedDsTopic ? (
+            <>
+              <LanguageTabs
+                languages={languages}
+                onSelectLanguage={setSelectedLanguage}
+                selectedLanguage={selectedLanguage}
+              />
 
-            <TopicHeader topic={selectedDsTopic} />
+              <TopicHeader topic={selectedDsTopic} />
 
             <section className="lessonSection">
               <div className="sectionTitle">
@@ -231,35 +254,36 @@ export function TutorialExplorer() {
                 </div>
               )}
             </section>
-          </>
-        ) : null}
+            </>
+          ) : null}
 
-        {selectedIndex >= 0 ? (
-          <nav className="lessonPager" aria-label="Previous and next topics">
-            <button
-              className="pagerButton"
-              disabled={!previousTopic}
-              onClick={() => previousTopic && selectTopic(previousTopic.id)}
-              type="button"
-            >
-              <span className="pagerDirection">Previous</span>
-              <strong>{previousTopic?.title ?? "Start of tutorial"}</strong>
-              <small>{previousTopic?.layer ?? "No previous topic"}</small>
-            </button>
+          {selectedIndex >= 0 ? (
+            <nav className="lessonPager" aria-label="Previous and next topics">
+              <button
+                className="pagerButton"
+                disabled={!previousTopic}
+                onClick={() => previousTopic && selectTopic(previousTopic.id)}
+                type="button"
+              >
+                <span className="pagerDirection">Previous</span>
+                <strong>{previousTopic?.title ?? "Start of tutorial"}</strong>
+                <small>{previousTopic?.layer ?? "No previous topic"}</small>
+              </button>
 
-            <button
-              className="pagerButton next"
-              disabled={!nextTopic}
-              onClick={() => nextTopic && selectTopic(nextTopic.id)}
-              type="button"
-            >
-              <span className="pagerDirection">Next</span>
-              <strong>{nextTopic?.title ?? "End of tutorial"}</strong>
-              <small>{nextTopic?.layer ?? "No next topic"}</small>
-            </button>
-          </nav>
-        ) : null}
-      </main>
-    </div>
+              <button
+                className="pagerButton next"
+                disabled={!nextTopic}
+                onClick={() => nextTopic && selectTopic(nextTopic.id)}
+                type="button"
+              >
+                <span className="pagerDirection">Next</span>
+                <strong>{nextTopic?.title ?? "End of tutorial"}</strong>
+                <small>{nextTopic?.layer ?? "No next topic"}</small>
+              </button>
+            </nav>
+          ) : null}
+        </main>
+      </div>
+    </>
   );
 }

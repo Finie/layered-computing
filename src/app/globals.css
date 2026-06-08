@@ -100,10 +100,15 @@ button {
   top: 24px;
 }
 
+.mobileSiteHeader,
 .mobileTopicBar,
 .mobileNavToggle,
 .mobileNavBackdrop,
 .mobileNavTop {
+  display: none;
+}
+
+.mobileDrawerNav {
   display: none;
 }
 
@@ -772,6 +777,95 @@ button {
 }
 
 @media (max-width: 920px) {
+  .mobileSiteHeader {
+    background: rgb(246 250 252 / 0.96);
+    border-bottom: 1px solid var(--line);
+    box-shadow: 0 10px 28px rgb(18 57 90 / 0.1);
+    display: block;
+    position: sticky;
+    top: 0;
+    z-index: 18;
+  }
+
+  .mobileSiteHeaderInner {
+    align-items: center;
+    display: flex;
+    gap: 10px;
+    margin: 0 auto;
+    max-width: 1280px;
+    min-height: 58px;
+    padding: 8px 14px;
+  }
+
+  .mobileSiteHeaderInner > strong {
+    color: #12395a;
+    flex: 1 1 auto;
+    font-size: 0.95rem;
+    font-weight: 800;
+    letter-spacing: 0.01em;
+    min-width: 0;
+  }
+
+  .mobileSiteLinks {
+    align-items: center;
+    display: flex;
+    flex: 0 0 auto;
+    gap: 4px;
+  }
+
+  .mobileSiteLinks button {
+    background: transparent;
+    border: 0;
+    border-radius: 8px;
+    color: #12395a;
+    font-size: 0.85rem;
+    font-weight: 800;
+    padding: 8px 7px;
+  }
+
+  .mobileSiteLinks button:focus-visible,
+  .mobileSiteLinks button:hover {
+    background: var(--accent-soft);
+    outline: none;
+  }
+
+  .mobileTutorialMenu {
+    position: relative;
+  }
+
+  .mobileTutorialDropdown {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    box-shadow: 0 18px 42px rgb(15 23 42 / 0.18);
+    display: none;
+    max-height: min(70dvh, 560px);
+    min-width: min(82vw, 340px);
+    overflow-x: hidden;
+    overflow-y: auto;
+    padding: 12px;
+    position: absolute;
+    right: 0;
+    top: calc(100% + 8px);
+    width: min(82vw, 340px);
+    z-index: 24;
+  }
+
+  .mobileTutorialMenu:hover .mobileTutorialDropdown,
+  .mobileTutorialMenu:focus-within .mobileTutorialDropdown,
+  .mobileTutorialDropdown.open {
+    display: block;
+  }
+
+  .mobileTutorialDropdown .layerHeader {
+    font-size: 0.68rem;
+    padding: 10px 8px 7px;
+  }
+
+  .mobileTutorialDropdown .navGroup button {
+    padding: 8px;
+  }
+
   .appHeader {
     padding: 28px 20px 22px;
   }
@@ -789,6 +883,14 @@ button {
     gap: 16px;
     grid-template-columns: 1fr;
     padding: 16px;
+  }
+
+  .tutorialShell > .topicNav:not(.mobileDrawerNav) {
+    display: none;
+  }
+
+  .mobileDrawerNav {
+    display: block;
   }
 
   .mobileTopicBar {
@@ -897,7 +999,7 @@ button {
     width: 34px;
   }
 
-  .topicNav {
+  .mobileDrawerNav {
     border-radius: 0;
     bottom: 0;
     box-shadow: 18px 0 42px rgb(15 23 42 / 0.18);
