@@ -98,6 +98,12 @@ button {
   top: 24px;
 }
 
+.mobileNavToggle,
+.mobileNavBackdrop,
+.mobileNavTop {
+  display: none;
+}
+
 .navGroup + .navGroup {
   border-top: 1px solid var(--line);
   margin-top: 12px;
@@ -726,12 +732,88 @@ button {
     padding: 16px;
   }
 
-  .topicNav {
-    max-height: 42vh;
-    overscroll-behavior: contain;
+  .mobileNavToggle {
+    align-items: center;
+    background: var(--accent);
+    border: 1px solid var(--accent);
+    border-radius: 10px;
+    color: #ffffff;
+    display: inline-flex;
+    font-weight: 800;
+    gap: 8px;
+    justify-content: center;
+    padding: 11px 14px;
     position: sticky;
+    top: 10px;
+    width: max-content;
+    z-index: 8;
+  }
+
+  .mobileNavToggle span {
+    display: inline-block;
+    font-size: 1.1rem;
+    line-height: 1;
+  }
+
+  .mobileNavBackdrop {
+    background: rgb(15 23 42 / 0.44);
+    border: 0;
+    display: block;
+    inset: 0;
+    padding: 0;
+    position: fixed;
+    z-index: 20;
+  }
+
+  .mobileNavTop {
+    align-items: center;
+    border-bottom: 1px solid var(--line);
+    display: flex;
+    justify-content: space-between;
+    margin: -6px -6px 8px;
+    padding: 4px 4px 10px;
+  }
+
+  .mobileNavTop strong {
+    color: #12395a;
+    font-size: 0.9rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .mobileNavTop button {
+    align-items: center;
+    background: var(--surface-soft);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    color: var(--accent-dark);
+    display: inline-flex;
+    font-size: 1.35rem;
+    height: 34px;
+    justify-content: center;
+    line-height: 1;
+    width: 34px;
+  }
+
+  .topicNav {
+    border-radius: 0;
+    bottom: 0;
+    box-shadow: 18px 0 42px rgb(15 23 42 / 0.18);
+    left: 0;
+    max-height: none;
+    max-width: min(86vw, 360px);
+    overscroll-behavior: contain;
+    padding: 14px;
+    position: fixed;
     top: 0;
-    z-index: 5;
+    transform: translateX(-105%);
+    transition: transform 0.22s ease;
+    width: min(86vw, 360px);
+    z-index: 21;
+  }
+
+  .topicNav.open {
+    transform: translateX(0);
   }
 
   .summaryGrid,
@@ -770,8 +852,6 @@ button {
   }
 
   .topicNav {
-    border-radius: 10px;
-    max-height: 38vh;
     padding: 10px;
   }
 
@@ -888,7 +968,7 @@ button {
   }
 
   .topicNav {
-    max-height: 34vh;
+    width: min(90vw, 340px);
   }
 
   .eyebrow,
