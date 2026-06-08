@@ -1,0 +1,908 @@
+:root {
+  --background: #f3f6f8;
+  --surface: #ffffff;
+  --surface-soft: #f8fbfc;
+  --ink: #1f2937;
+  --muted: #5f6f7f;
+  --line: #d8e1e8;
+  --accent: #1f7a8c;
+  --accent-dark: #145369;
+  --accent-soft: #e8f6f8;
+  --code-bg: #102a43;
+  --code-ink: #edf6fb;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--background);
+  color: var(--ink);
+  overflow-x: hidden;
+}
+
+body {
+  margin: 0;
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+.appHeader {
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
+  padding: 34px 28px 26px;
+}
+
+.appHeader > div {
+  margin: 0 auto;
+  max-width: 1240px;
+}
+
+.appHeader h1 {
+  color: #12395a;
+  font-size: clamp(2.25rem, 5vw, 4.4rem);
+  letter-spacing: 0;
+  line-height: 0.98;
+  margin: 6px 0 14px;
+}
+
+.appHeader p {
+  color: var(--muted);
+  font-size: 1.08rem;
+  margin: 0;
+  max-width: 880px;
+}
+
+.eyebrow {
+  color: var(--accent);
+  display: inline-block;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.tutorialShell {
+  display: grid;
+  gap: 24px;
+  grid-template-columns: 300px minmax(0, 1fr);
+  margin: 0 auto;
+  max-width: 1280px;
+  padding: 24px;
+}
+
+.topicNav {
+  align-self: start;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  max-height: calc(100vh - 48px);
+  overflow: auto;
+  padding: 14px;
+  position: sticky;
+  top: 24px;
+}
+
+.navGroup + .navGroup {
+  border-top: 1px solid var(--line);
+  margin-top: 12px;
+  padding-top: 12px;
+}
+
+.navGroup p {
+  color: var(--muted);
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  margin: 0 8px 8px;
+  text-transform: uppercase;
+}
+
+.navGroup button {
+  background: transparent;
+  border: 0;
+  border-radius: 8px;
+  color: #263f57;
+  display: block;
+  margin: 2px 0;
+  padding: 9px 10px;
+  text-align: left;
+  width: 100%;
+}
+
+.navGroup button.active,
+.navGroup button:hover {
+  background: var(--accent-soft);
+  color: var(--accent-dark);
+  font-weight: 700;
+}
+
+.lessonPanel {
+  min-width: 0;
+}
+
+.lessonPanel > *,
+.topicHeader,
+.lessonSection,
+.alHero,
+.alSection,
+.alCompareCol,
+.alCard,
+.practiceGuide,
+.recognitionGrid article,
+.practiceExampleGrid article {
+  min-width: 0;
+}
+
+.languageTabs {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 18px;
+  padding: 10px;
+}
+
+.languageTabs button {
+  background: var(--surface-soft);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--accent-dark);
+  font-weight: 800;
+  padding: 9px 13px;
+}
+
+.languageTabs button.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #ffffff;
+}
+
+.topicHeader,
+.lessonSection {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  margin-bottom: 18px;
+  padding: 24px;
+}
+
+.topicHeader {
+  display: grid;
+  gap: 22px;
+}
+
+.topicHeader h1 {
+  color: #12395a;
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  letter-spacing: 0;
+  line-height: 1.05;
+  margin: 6px 0 10px;
+}
+
+.topicHeader p,
+.lessonSection p {
+  color: var(--muted);
+  margin: 0;
+}
+
+.summaryGrid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.summaryGrid div,
+.complexityPill {
+  background: var(--surface-soft);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 13px;
+}
+
+.summaryGrid strong,
+.complexityPill span {
+  color: var(--accent-dark);
+  display: block;
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  margin-bottom: 5px;
+  text-transform: uppercase;
+}
+
+.summaryGrid span {
+  color: var(--ink);
+}
+
+.sectionTitle {
+  margin-bottom: 14px;
+}
+
+.sectionTitle h2 {
+  color: #12395a;
+  font-size: 1.45rem;
+  letter-spacing: 0;
+  line-height: 1.2;
+  margin: 3px 0 0;
+}
+
+.complexityGrid {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.complexityPill strong {
+  color: var(--ink);
+  display: block;
+  font-size: 1rem;
+}
+
+.codeBlock {
+  background: var(--code-bg);
+  border-radius: 10px;
+  color: var(--code-ink);
+  font-family: "SFMono-Regular", Menlo, Consolas, monospace;
+  font-size: 0.9rem;
+  line-height: 1.52;
+  margin: 14px 0 0;
+  max-width: 100%;
+  overflow: auto;
+  padding: 17px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.codeBlock code {
+  font: inherit;
+  white-space: pre;
+}
+
+.whyText {
+  background: var(--accent-soft);
+  border-left: 5px solid var(--accent);
+  border-radius: 8px;
+  color: #203749 !important;
+  margin-top: 14px !important;
+  padding: 12px 14px;
+}
+
+.practiceGuide {
+  background: var(--surface-soft);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  margin-top: 14px;
+  padding: 15px;
+}
+
+.practiceGuide h3,
+.exampleList h3,
+.recognitionGrid h3 {
+  color: #12395a;
+  font-size: 1rem;
+  letter-spacing: 0;
+  line-height: 1.25;
+  margin: 0 0 7px;
+}
+
+.practiceGuide ol {
+  margin: 11px 0 0;
+  padding-left: 21px;
+}
+
+.practiceGuide li {
+  margin: 5px 0;
+}
+
+.algorithmFlow {
+  align-items: stretch;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.algorithmFlowItem {
+  align-items: center;
+  display: flex;
+  gap: 8px;
+}
+
+.algorithmFlowItem span {
+  background: #eaf6f8;
+  border: 1px solid #b7dce5;
+  border-radius: 8px;
+  color: #12395a;
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 700;
+  max-width: 240px;
+  padding: 9px 11px;
+}
+
+.algorithmFlowItem strong {
+  color: var(--accent);
+  font-size: 1.1rem;
+}
+
+.exampleList {
+  margin-top: 14px;
+}
+
+.practiceExampleGrid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+}
+
+.practiceExampleGrid article {
+  background: #fff7e6;
+  border: 1px solid #f1d39b;
+  border-radius: 10px;
+  padding: 12px;
+}
+
+.exampleList > div:not(.practiceExampleGrid) {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.exampleList span,
+.practiceExampleGrid span {
+  background: #fff7e6;
+  border-radius: 999px;
+  color: #5f4618;
+  display: inline-block;
+  font-weight: 700;
+  padding: 7px 10px;
+}
+
+.practiceExampleGrid .codeBlock,
+.recognitionGrid .codeBlock {
+  font-size: 0.82rem;
+  margin-top: 10px;
+  padding: 13px;
+}
+
+.signalList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.signalList span {
+  background: var(--surface-soft);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: #243b53;
+  padding: 7px 10px;
+}
+
+.recognitionGrid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.recognitionGrid article {
+  background: var(--surface-soft);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 14px;
+}
+
+.recognitionGrid p {
+  color: var(--ink);
+  margin-bottom: 9px;
+}
+
+.recognitionGrid span {
+  background: var(--accent-soft);
+  border-radius: 7px;
+  color: var(--accent-dark);
+  display: block;
+  font-size: 0.92rem;
+  padding: 8px 9px;
+}
+
+/* ── Nav layer headers ─────────────────────────────────────── */
+.layerHeader {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  border-top: 1px solid var(--line);
+  color: var(--accent-dark);
+  cursor: pointer;
+  display: flex;
+  font-size: 0.72rem;
+  font-weight: 800;
+  justify-content: space-between;
+  letter-spacing: 0.08em;
+  margin-top: 6px;
+  padding: 14px 10px 8px;
+  text-transform: uppercase;
+  width: 100%;
+}
+
+.layerHeader:first-child {
+  border-top: none;
+  margin-top: 0;
+  padding-top: 6px;
+}
+
+.layerHeaderFuture {
+  margin-top: 10px;
+}
+
+.layerArrow {
+  display: inline-block;
+  font-style: normal;
+  transition: transform 0.18s ease;
+}
+
+.layerArrow.collapsed {
+  transform: rotate(-90deg);
+}
+
+/* ── Application Layer view ────────────────────────────────── */
+.alHero {
+  background: linear-gradient(135deg, #12395a 0%, #1f7a8c 100%);
+  border-radius: 12px;
+  color: #fff;
+  margin-bottom: 18px;
+  padding: 28px 28px 24px;
+}
+
+.alHero .eyebrow {
+  color: #93d5e8;
+}
+
+.alHero h1 {
+  color: #fff;
+  font-size: clamp(1.9rem, 4vw, 3rem);
+  letter-spacing: 0;
+  line-height: 1.05;
+  margin: 6px 0 12px;
+}
+
+.alHero p {
+  color: #c8e8f0;
+  font-size: 1.02rem;
+  line-height: 1.65;
+  margin: 0;
+  max-width: 820px;
+}
+
+.alSection {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  margin-bottom: 18px;
+  padding: 24px;
+}
+
+.alSection > h2 {
+  border-bottom: 1px solid var(--line);
+  color: #12395a;
+  font-size: 1.25rem;
+  letter-spacing: 0;
+  line-height: 1.2;
+  margin: 0 0 16px;
+  padding-bottom: 12px;
+}
+
+.alSubheading {
+  color: #12395a;
+  font-size: 1rem;
+  margin: 18px 0 6px;
+}
+
+.alSection > p,
+.alSection p {
+  color: var(--muted);
+  line-height: 1.65;
+  margin: 0 0 12px;
+}
+
+.alList {
+  color: var(--muted);
+  line-height: 1.65;
+  margin: 0 0 14px;
+  padding-left: 22px;
+}
+
+.alList li {
+  margin: 5px 0;
+}
+
+.alGrid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(175px, 1fr));
+  margin: 14px 0;
+}
+
+.alCard {
+  background: var(--surface-soft);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 14px;
+}
+
+.alCard strong {
+  color: #12395a;
+  display: block;
+  font-size: 0.88rem;
+  margin-bottom: 6px;
+}
+
+.alCard p {
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.alCompare {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(185px, 1fr));
+  margin: 14px 0;
+}
+
+.alCompareCol {
+  background: var(--surface-soft);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 14px;
+}
+
+.alCompareCol > strong {
+  border-bottom: 1px solid var(--line);
+  color: #12395a;
+  display: block;
+  font-size: 0.88rem;
+  margin-bottom: 8px;
+  padding-bottom: 7px;
+}
+
+.alCompareCol ul {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.alCompareCol li {
+  color: var(--muted);
+  font-size: 0.88rem;
+  line-height: 1.45;
+  margin: 4px 0;
+}
+
+.alCallout {
+  background: var(--accent-soft);
+  border-left: 4px solid var(--accent);
+  border-radius: 0 10px 10px 0;
+  margin: 14px 0;
+  padding: 14px 16px;
+}
+
+.alCallout .eyebrow {
+  margin-bottom: 6px;
+}
+
+.alCallout p {
+  color: #1a3a4f;
+  margin: 0;
+}
+
+.alCodeBlock {
+  margin: 14px 0;
+}
+
+.alCodeLabel {
+  background: #0a1f30;
+  border-radius: 6px 6px 0 0;
+  color: #93c5d8;
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  padding: 5px 14px;
+  text-transform: uppercase;
+}
+
+.alCodeBlock .codeBlock {
+  border-radius: 0 6px 6px 6px;
+  margin-top: 0;
+}
+
+.alTagRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 10px 0;
+}
+
+.alTag {
+  background: var(--accent-soft);
+  border-radius: 5px;
+  color: var(--accent-dark);
+  font-size: 0.82rem;
+  font-weight: 700;
+  padding: 3px 10px;
+}
+
+.alDivider {
+  border-top: 1px dashed var(--line);
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  margin: 22px 0 8px;
+  padding-top: 14px;
+  text-transform: uppercase;
+}
+
+.alDiagram {
+  margin: 16px 0;
+}
+
+.alDiagramCaption {
+  background: #0e2233;
+  border-radius: 6px 6px 0 0;
+  color: #7ec8e3;
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  padding: 5px 14px;
+  text-transform: uppercase;
+}
+
+.alDiagramPre {
+  background: #0a1929;
+  border-radius: 0 6px 6px 6px;
+  color: #c8e8f5;
+  font-family: "Fira Mono", "Cascadia Code", "Consolas", monospace;
+  font-size: 0.82rem;
+  line-height: 1.55;
+  margin: 0;
+  max-width: 100%;
+  overflow-x: auto;
+  padding: 18px 20px;
+  -webkit-overflow-scrolling: touch;
+  white-space: pre;
+}
+
+@media (max-width: 1100px) {
+  .tutorialShell {
+    grid-template-columns: 270px minmax(0, 1fr);
+  }
+
+  .summaryGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .complexityGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 920px) {
+  .appHeader {
+    padding: 28px 20px 22px;
+  }
+
+  .appHeader h1 {
+    font-size: clamp(2rem, 9vw, 3rem);
+    line-height: 1.04;
+  }
+
+  .appHeader p {
+    font-size: 1rem;
+  }
+
+  .tutorialShell {
+    gap: 16px;
+    grid-template-columns: 1fr;
+    padding: 16px;
+  }
+
+  .topicNav {
+    max-height: 42vh;
+    overscroll-behavior: contain;
+    position: sticky;
+    top: 0;
+    z-index: 5;
+  }
+
+  .summaryGrid,
+  .complexityGrid,
+  .recognitionGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .alCompare,
+  .alGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .appHeader {
+    padding: 22px 14px 18px;
+  }
+
+  .appHeader h1 {
+    font-size: clamp(1.8rem, 11vw, 2.45rem);
+  }
+
+  .appHeader p,
+  .topicHeader p,
+  .lessonSection p,
+  .alHero p,
+  .alSection p,
+  .alList,
+  .alCompareCol li {
+    font-size: 0.95rem;
+  }
+
+  .tutorialShell {
+    padding: 12px;
+  }
+
+  .topicNav {
+    border-radius: 10px;
+    max-height: 38vh;
+    padding: 10px;
+  }
+
+  .layerHeader {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  .navGroup button {
+    padding: 10px 8px;
+  }
+
+  .languageTabs {
+    gap: 6px;
+    padding: 8px;
+  }
+
+  .languageTabs button {
+    flex: 1 1 100%;
+    padding: 10px 9px;
+  }
+
+  .topicHeader,
+  .lessonSection,
+  .alHero,
+  .alSection {
+    border-radius: 10px;
+    margin-bottom: 14px;
+    padding: 16px;
+  }
+
+  .topicHeader h1,
+  .alHero h1 {
+    font-size: clamp(1.65rem, 9vw, 2.25rem);
+    line-height: 1.08;
+  }
+
+  .sectionTitle h2,
+  .alSection > h2 {
+    font-size: 1.18rem;
+  }
+
+  .summaryGrid div,
+  .complexityPill,
+  .alCompareCol,
+  .alCard,
+  .practiceGuide,
+  .recognitionGrid article,
+  .practiceExampleGrid article {
+    border-radius: 8px;
+    padding: 12px;
+  }
+
+  .signalList span,
+  .exampleList span,
+  .practiceExampleGrid span {
+    border-radius: 8px;
+    font-size: 0.88rem;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+  }
+
+  .algorithmFlow {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .algorithmFlowItem {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .algorithmFlowItem span {
+    max-width: none;
+    width: 100%;
+  }
+
+  .algorithmFlowItem strong {
+    align-self: center;
+    transform: rotate(90deg);
+  }
+
+  .codeBlock,
+  .alDiagramPre {
+    font-size: 0.78rem;
+    padding: 13px;
+  }
+
+  .alCodeLabel,
+  .alDiagramCaption {
+    border-radius: 6px 6px 0 0;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+    padding: 5px 10px;
+  }
+
+  .alCodeBlock .codeBlock,
+  .alDiagramPre {
+    border-radius: 0 6px 6px 6px;
+  }
+}
+
+@media (max-width: 420px) {
+  .tutorialShell {
+    padding: 8px;
+  }
+
+  .topicHeader,
+  .lessonSection,
+  .alHero,
+  .alSection {
+    padding: 13px;
+  }
+
+  .topicNav {
+    max-height: 34vh;
+  }
+
+  .eyebrow,
+  .navGroup p,
+  .layerHeader,
+  .summaryGrid strong,
+  .complexityPill span,
+  .alCodeLabel,
+  .alDiagramCaption {
+    letter-spacing: 0.04em;
+  }
+
+  .codeBlock,
+  .alDiagramPre {
+    font-size: 0.72rem;
+  }
+}
