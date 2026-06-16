@@ -55,6 +55,8 @@ This snapshot reflects the current authored source files:
 
 - `src/data/tutorial-content.ts`
 - `src/data/app-layer-content.ts`
+- `src/data/database-curriculum-content.ts`
+- `src/data/dbre-complete-track-content.ts`
 - `src/app/page.tsx`
 
 ### Fully Or Strongly Covered
@@ -74,9 +76,9 @@ Current data structure topics include arrays, dynamic arrays, linked lists, stac
 - Algorithms: Level 1, embedded inside data-structure examples.
 - Concurrency: Level 0 to Level 1.
 - Networking: Level 0 to Level 1.
-- Databases: Level 1 to partial Level 2.
+- Databases: Level 4.
 - Application Engineering: Level 2 to partial Level 3.
-- Distributed Systems: Level 0 to Level 1.
+- Distributed Systems: Level 3 to partial Level 4.
 - Internet Infrastructure: Level 0.
 - Cloud Computing: Level 0.
 - Modern Software Ecosystems: Level 0.
@@ -298,6 +300,14 @@ Needs:
 - Replication
 - Sharding
 
+Recent expansion:
+
+- `src/data/database-curriculum-content.ts` now defines the database engineering path used by "The Full System: When One Machine Is Not Enough" and "Distributed Scale and Engineering Thinking".
+- Coverage now includes database engine internals, PostgreSQL architecture, MySQL/MariaDB and InnoDB foundations, transactions, MVCC, indexes, query planning, WAL/redo/binlog, replication, HA, backups, security, performance, observability, Linux operations, automation, Kubernetes, cloud databases, and fintech consistency patterns.
+- The topic remains an application-layer view in the UI, but conceptually it is now the Databases -> Distributed Systems -> Cloud Operations bridge.
+- `src/data/dbre-complete-track-content.ts` adds the missing DBRE chapters: SQL/relational foundations, PostgreSQL storage/MVCC/VACUUM/bloat, PostgreSQL WAL/replication/backups/PITR, HA with Patroni/etcd/PgBouncer, MySQL/MariaDB operations, TLS/Vault/audit security, performance workshops, observability/runbooks, automation/Kubernetes/cloud databases, fintech capstone, and interview readiness.
+- The DBRE path now includes diagrams, code/config examples, labs, and interview prompts for every major target role area.
+
 ### Application Engineering
 
 Current status: Level 2 to partial Level 3.
@@ -314,7 +324,7 @@ Needs:
 
 ### Distributed Systems
 
-Current status: Level 0 to Level 1.
+Current status: Level 3 to partial Level 4.
 
 Needs:
 
@@ -328,6 +338,12 @@ Needs:
 - Consistency models
 - Queues and streams
 - Distributed transactions
+
+Recent expansion:
+
+- High-availability database concepts now include primary/replica topologies, synchronous versus asynchronous replication, replication lag, split brain, leader election, quorum, failover, switchover, RPO/RTO, Patroni, etcd/Consul, PgBouncer, Galera, and disaster recovery drills.
+- The distributed-systems material is grounded in database reliability rather than a broad survey, which matches the target Database Engineer / Database Reliability Engineer outcome.
+- Added concrete HA, replication, consensus, failover, fencing, outbox, idempotency, cloud, and incident-response chapters through the DBRE track.
 - CAP as a later synthesis, not the first explanation
 
 ### Internet Infrastructure

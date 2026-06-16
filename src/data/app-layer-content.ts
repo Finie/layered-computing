@@ -1,6 +1,11 @@
 import type { AppLayerTopic } from "@/types/tutorial";
+import {
+  databaseReliabilityTopic,
+  databaseSystemsTopic,
+} from "./database-curriculum-content";
+import { dbreCompleteTrackTopics } from "./dbre-complete-track-content";
 
-export const appLayerTopics: AppLayerTopic[] = [
+const baseAppLayerTopics: AppLayerTopic[] = [
   {
     id: "al-foundations",
     title: "From Programs to Applications",
@@ -2506,4 +2511,21 @@ def fetch_with_retry(url: str, max_attempts: int = 4):
       },
     ],
   },
+];
+
+const appLayerTopicsWithDatabaseOverviews: AppLayerTopic[] = baseAppLayerTopics.map((topic) => {
+  if (topic.id === databaseSystemsTopic.id) return databaseSystemsTopic;
+  if (topic.id === databaseReliabilityTopic.id) return databaseReliabilityTopic;
+  return topic;
+});
+
+const databaseTrackInsertIndex =
+  appLayerTopicsWithDatabaseOverviews.findIndex(
+    (topic) => topic.id === databaseReliabilityTopic.id,
+  ) + 1;
+
+export const appLayerTopics: AppLayerTopic[] = [
+  ...appLayerTopicsWithDatabaseOverviews.slice(0, databaseTrackInsertIndex),
+  ...dbreCompleteTrackTopics,
+  ...appLayerTopicsWithDatabaseOverviews.slice(databaseTrackInsertIndex),
 ];
